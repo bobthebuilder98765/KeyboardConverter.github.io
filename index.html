@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Language Converter</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 400px; /* Set a fixed width for better appearance */
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: calc(100% - 20px); /* Adjust width for padding */
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        button {
+            background-color: #2ecc71; /* Default button color */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .blue-button {
+            background-color: #3498db; /* Blue button color */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Language Converter</h1>
+        <textarea id="inputText" rows="4" placeholder="Enter text in Hebrew" value="שלום עולם"></textarea>
+        <br>
+        <button onclick="toggleLanguage()">Toggle Language</button>
+        <textarea id="outputText" rows="4" readonly></textarea>
+        <br>
+        <button class="blue-button" onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <script>
+        let isHebrewMode = true;
+
+        const keyMapping = {
+            'q': '/',
+            'w': '\'',
+            'e': 'ק',
+            'r': 'ר',
+            't': 'א',
+            'y': 'ט',
+            'u': 'ו',
+            'i': 'ן',
+            'o': 'ם',
+            'p': 'פ',
+            '[': ']',
+            ']': '[',
+            'a': 'ש',
+            's': 'ד',
+            'd': 'ג',
+            'f': 'כ',
+            'g': 'ע',
+            'h': 'י',
+            'j': 'ח',
+            'k': 'ל',
+            'l': 'ך',
+            ';': 'ף',
+            'z': 'ז',
+            'x': 'ס',
+            'c': 'ב',
+            'v': 'ה',
+            'b': 'נ',
+            'n': 'מ',
+            'm': 'צ',
+            ',': 'ת',
+            '.': 'ץ',
+            '\\': '/',
+            '`': ';',
+            '~': ':',
+            '<': ',',
+            '>': '.',
+        };
+
+        function convertText() {
+            const inputText = document.getElementById("inputText").value;
+            const outputText = document.getElementById("outputText");
+
+            let resultString = "";
+            const mapping = isHebrewMode ? keyMapping : reverseKeyMapping();
+
+            for (let char of inputText) {
+                if (char in mapping) {
+                    resultString += mapping[char];
+                } else if (char === ' ') {
+                    resultString += ' ';
+                } else {
+                    resultString += char;
+                }
+            }
+
+            outputText.value = resultString;
+        }
+
+        function toggleLanguage() {
+            isHebrewMode = !isHebrewMode;
+            const inputText = document.getElementById("inputText");
+            inputText.placeholder = isHebrewMode ? "Enter text in Hebrew" : "Enter text in English";
+            convertText(); // Live translate on toggle
+        }
+
+        function reverseKeyMapping() {
+            // Create a reverse mapping from Hebrew characters to English characters
+            const reverseMapping = {};
+            for (const [key, value] of Object.entries(keyMapping)) {
+                reverseMapping[value] = key;
+            }
+            return reverseMapping;
+        }
+
+        // Live translation on input
+        document.getElementById("inputText").addEventListener("input", convertText);
+
+        function copyToClipboard() {
+            const outputText = document.getElementById("outputText");
+            outputText.select();
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
